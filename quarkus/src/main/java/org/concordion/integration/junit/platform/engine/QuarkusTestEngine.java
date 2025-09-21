@@ -1,5 +1,6 @@
 package org.concordion.integration.junit.platform.engine;
 
+import static java.util.stream.Stream.concat;
 import static org.junit.platform.commons.support.AnnotationSupport.findAnnotation;
 import static org.junit.platform.commons.support.ReflectionSupport.streamAllClassesInPackage;
 
@@ -45,16 +46,16 @@ public class QuarkusTestEngine extends
         var root = new ConcordionEngineDescriptor(id,
             "Concordion with Quarkus for JUnit Platform");
         var locator = new ClassNameBasedSpecificationLocator();
-
-        request.getSelectorsByType(ClassSelector.class).stream()
-            .map(ClassSelector::getJavaClass)
-            .map(this::ensureClassLoader)
-            .filter(IS_FIXTURE_CLASS)
-            .forEach(fixture -> append(root, fixture, locator));
-        request.getSelectorsByType(PackageSelector.class)
+        var byClass = request.getSelectorsByType(ClassSelector.class)
             .stream()
-            .flatMap(selector -> streamAllClassesInPackage(
-                selector.getPackageName(), clazz -> true, className -> true))
+            .map(ClassSelector::getJavaClass);
+        var byPackage = request.getSelectorsByType(PackageSelector.class)
+            .stream()
+            .flatMap(selector ->
+                streamAllClassesInPackage(selector.getPackageName(),
+                    clazz -> true, className -> true));
+
+        concat(byClass, byPackage)
             .map(this::ensureClassLoader)
             .filter(IS_FIXTURE_CLASS)
             .forEach(fixture -> append(root, fixture, locator));
