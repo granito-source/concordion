@@ -23,10 +23,10 @@ public class JUnit5QuarkusConcordionProviderTest {
             .isTrue();
     }
 
-    public static class PlainClass {
+    private static class PlainClass {
     }
 
     @QuarkusConcordionFixture
-    public static class AnnotatedTest {
+    private static class AnnotatedTest {
     }
 }
