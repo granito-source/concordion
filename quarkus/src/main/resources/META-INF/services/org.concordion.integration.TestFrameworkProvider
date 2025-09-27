@@ -1,1 +1,1 @@
-io.granito.concordion.quarkus.JUnit5QuarkusConcordionProvider
+io.granito.concordion.quarkus.QuarkusConcordionProvider

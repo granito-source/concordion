@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.granito.concordion.api.QuarkusConcordionFixture;
 import org.junit.jupiter.api.Test;
 
-public class JUnit5QuarkusConcordionProviderTest {
-    private final JUnit5QuarkusConcordionProvider provider =
-        new JUnit5QuarkusConcordionProvider();
+public class QuarkusConcordionProviderTest {
+    private final QuarkusConcordionProvider provider =
+        new QuarkusConcordionProvider();
 
     @Test
     void doesNotIndicateConcordionFixtureWhenNotAnnotated()

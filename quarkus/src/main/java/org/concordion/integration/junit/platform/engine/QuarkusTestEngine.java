@@ -5,13 +5,18 @@ import static org.junit.platform.commons.support.AnnotationSupport.findAnnotatio
 import static org.junit.platform.commons.support.ReflectionSupport.streamAllClassesInPackage;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Random;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import io.granito.concordion.api.QuarkusConcordionFixture;
+import io.quarkus.bootstrap.app.RunningQuarkusApplication;
+import io.quarkus.bootstrap.app.StartupAction;
 import org.concordion.api.SpecificationLocator;
 import org.concordion.internal.ClassNameBasedSpecificationLocator;
+import org.concordion.internal.runner.QuarkusRunner;
 import org.junit.platform.engine.EngineDiscoveryRequest;
 import org.junit.platform.engine.ExecutionRequest;
 import org.junit.platform.engine.TestDescriptor;
@@ -22,6 +27,10 @@ import org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine;
 
 public class QuarkusTestEngine extends
     HierarchicalTestEngine<ConcordionEngineExecutionContext> {
+    private static final int MIN_PORT = 49152;
+
+    private static final int MAX_PORT = 65500;
+
     private static final String ENDS_WITH_FIXTURE_OR_TEST_REGEX =
         ".*(Fixture|Test)$";
 
@@ -30,8 +39,33 @@ public class QuarkusTestEngine extends
             .isPresent() &&
             clazz.getName().matches(ENDS_WITH_FIXTURE_OR_TEST_REGEX);
 
-    private static final Map<Class<?>, SpecificationDescriptor> cache =
-        new ConcurrentHashMap<>();
+    public static Stream<Class<?>> fixtureStream(EngineDiscoveryRequest request)
+    {
+        var byClass = request.getSelectorsByType(ClassSelector.class)
+            .stream()
+            .map(ClassSelector::getJavaClass);
+        var byPackage = request.getSelectorsByType(PackageSelector.class)
+            .stream()
+            .flatMap(selector -> streamAllClassesInPackage(
+                selector.getPackageName(), clazz -> true,
+                className -> true));
+
+        return concat(byClass, byPackage);
+    }
+
+    private final Map<Class<?>, SpecificationDescriptor> cache =
+        new HashMap<>();
+
+    private final StartupAction startupAction;
+
+    private RunningQuarkusApplication runningApplication;
+
+    public QuarkusTestEngine(StartupAction startupAction)
+    {
+        this.startupAction = startupAction;
+        System.setProperty("concordion.runner.concordion",
+            QuarkusRunner.class.getName());
+    }
 
     @Override
     public String getId()
@@ -46,16 +80,8 @@ public class QuarkusTestEngine extends
         var root = new ConcordionEngineDescriptor(id,
             "Concordion with Quarkus for JUnit Platform");
         var locator = new ClassNameBasedSpecificationLocator();
-        var byClass = request.getSelectorsByType(ClassSelector.class)
-            .stream()
-            .map(ClassSelector::getJavaClass);
-        var byPackage = request.getSelectorsByType(PackageSelector.class)
-            .stream()
-            .flatMap(selector ->
-                streamAllClassesInPackage(selector.getPackageName(),
-                    clazz -> true, className -> true));
 
-        concat(byClass, byPackage)
+        fixtureStream(request)
             .map(this::ensureClassLoader)
             .filter(IS_FIXTURE_CLASS)
             .forEach(fixture -> append(root, fixture, locator));
@@ -73,6 +99,8 @@ public class QuarkusTestEngine extends
     protected void append(TestDescriptor parent, Class<?> fixture,
         SpecificationLocator locator)
     {
+        ensureRunning();
+
         var descriptor = appendSpec(parent, fixture, locator);
 
         try {
@@ -122,6 +150,40 @@ public class QuarkusTestEngine extends
             return classLoader.loadClass(clazz.getName());
         } catch (ClassNotFoundException ex) {
             throw new RuntimeException(ex);
+        }
+    }
+
+    private synchronized void ensureRunning()
+    {
+        if (runningApplication == null)
+            try {
+                runningApplication = runApplication(startupAction);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+    }
+
+    private RunningQuarkusApplication runApplication(StartupAction action)
+        throws Exception
+    {
+        var port = new Random().nextInt(MAX_PORT - MIN_PORT) + MIN_PORT;
+
+        action.overrideConfig(
+            Map.of("quarkus.http.test-port", String.valueOf(port)));
+        configureRestAssured(action.getClassLoader(), port);
+
+        return action.run();
+    }
+
+    private void configureRestAssured(ClassLoader classLoader, int port)
+    {
+        try {
+            classLoader
+                .loadClass("io.restassured.RestAssured")
+                .getField("port")
+                .setInt(null, port);
+        } catch (Exception ex) {
+            // this is the best effort, if not done ignore
         }
     }
 }

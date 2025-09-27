@@ -1,17 +1,15 @@
 package io.granito.concordion.quarkus;
 
 import java.nio.file.Paths;
-import java.util.Map;
-import java.util.Random;
 import java.util.ServiceLoader;
 
+import io.quarkus.bootstrap.BootstrapException;
 import io.quarkus.bootstrap.app.QuarkusBootstrap;
-import io.quarkus.bootstrap.app.RunningQuarkusApplication;
+import io.quarkus.bootstrap.app.StartupAction;
 import io.quarkus.bootstrap.model.PathsCollection;
 import io.quarkus.maven.dependency.ArtifactKey;
 import io.quarkus.test.common.PathTestHelper;
 import org.concordion.integration.junit.platform.engine.QuarkusTestEngine;
-import org.concordion.internal.runner.QuarkusRunner;
 import org.junit.platform.engine.EngineDiscoveryRequest;
 import org.junit.platform.engine.ExecutionRequest;
 import org.junit.platform.engine.TestDescriptor;
@@ -21,21 +19,9 @@ import org.junit.platform.engine.UniqueId;
 public class QuarkusConcordionTestEngine implements TestEngine {
     public static final String ENGINE_ID = "concordion-quarkus";
 
-    private static final int MIN_PORT = 49152;
-
-    private static final int MAX_PORT = 65500;
+    private static StartupAction startupAction;
 
     private static TestEngine testEngine;
-
-    public QuarkusConcordionTestEngine()
-    {
-        var underQuarkus = getClass()
-            .getClassLoader()
-            .getName()
-            .contains("Quarkus");
-
-        testEngine = underQuarkus ? createTestEngine() : loadTestEngine();
-    }
 
     @Override
     public String getId()
@@ -46,6 +32,8 @@ public class QuarkusConcordionTestEngine implements TestEngine {
     @Override
     public TestDescriptor discover(EngineDiscoveryRequest request, UniqueId id)
     {
+        ensureTestEngine(request);
+
         return testEngine.discover(request, id);
     }
 
@@ -55,48 +43,77 @@ public class QuarkusConcordionTestEngine implements TestEngine {
         testEngine.execute(request);
     }
 
-    protected TestEngine newTestEngine()
-    {
-        return new QuarkusTestEngine();
-    }
-
-    protected <T> ServiceLoader<T> loadService(Class<T> clazz,
+    protected <T> ServiceLoader<T> serviceLoaderLoad(Class<T> service,
         ClassLoader classLoader)
     {
-        return ServiceLoader.load(clazz, classLoader);
+        return ServiceLoader.load(service, classLoader);
     }
 
-    private TestEngine createTestEngine()
+    protected TestEngine newQuarkusTestEngine(StartupAction startupAction)
     {
-        System.setProperty("concordion.runner.concordion",
-            QuarkusRunner.class.getName());
-
-        return newTestEngine();
+        return new QuarkusTestEngine(startupAction);
     }
 
-    private TestEngine loadTestEngine()
+    private TestEngine reloadTestEngine()
     {
+        var classLoader = startupAction.getClassLoader();
+
         try {
-            var application = runApplication(getClass());
-            var classLoader = application.getClassLoader();
-            var engineClass = classLoader
-                .loadClass(TestEngine.class.getName());
+            var engineClass = classLoader.loadClass(TestEngine.class.getName());
 
-            for (var provider: loadService(engineClass, classLoader)) {
+            for (var provider: serviceLoaderLoad(engineClass, classLoader)) {
                 var engine = (TestEngine)provider;
 
-                if (ENGINE_ID.equals(engine.getId()))
+                if (ENGINE_ID.equals(engine.getId())) {
+                    var field = engine
+                        .getClass()
+                        .getDeclaredField("startupAction");
+
+                    field.setAccessible(true);
+                    field.set(null, startupAction);
+                    field.setAccessible(false);
+
                     return engine;
+                }
             }
         } catch (Exception ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalStateException(
+                "unable to load TestEngine class", ex);
         }
 
-        throw new IllegalStateException("no test engine for " + ENGINE_ID);
+        throw new IllegalStateException("no TestEngine with ID " +
+            ENGINE_ID);
     }
 
-    private RunningQuarkusApplication runApplication(Class<?> fixture)
-        throws Exception
+    private void ensureTestEngine(EngineDiscoveryRequest request)
+    {
+        synchronized (QuarkusConcordionTestEngine.class) {
+            if (testEngine != null)
+                return;
+
+            var runningUnderQuarkus = getClass()
+                .getClassLoader()
+                .getClass()
+                .getName()
+                .contains("Quarkus");
+
+            if (runningUnderQuarkus) {
+                testEngine = newQuarkusTestEngine(startupAction);
+
+                return;
+            }
+
+            QuarkusTestEngine.fixtureStream(request)
+                .findAny()
+                .map(this::bootstrap)
+                .ifPresentOrElse(action -> {
+                    startupAction = action;
+                    testEngine = reloadTestEngine();
+                }, () -> testEngine = newQuarkusTestEngine(null));
+        }
+    }
+
+    private StartupAction bootstrap(Class<?> fixture)
     {
         var testLocation = PathTestHelper.getTestClassesLocation(fixture);
         var appLocation = PathTestHelper
@@ -121,28 +138,14 @@ public class QuarkusConcordionTestEngine implements TestEngine {
             .setProjectRoot(Paths.get("").normalize().toAbsolutePath())
             .setApplicationRoot(applicationRoot)
             .build();
-        var action = bootstrap
-            .bootstrap()
-            .createAugmentor()
-            .createInitialRuntimeApplication();
-        var port = new Random().nextInt(MAX_PORT - MIN_PORT) + MIN_PORT;
 
-        action.overrideConfig(
-            Map.of("quarkus.http.test-port", String.valueOf(port)));
-        configureRestAssured(action.getClassLoader(), port);
-
-        return action.run();
-    }
-
-    private void configureRestAssured(ClassLoader classLoader, int port)
-    {
         try {
-            classLoader
-                .loadClass("io.restassured.RestAssured")
-                .getField("port")
-                .setInt(null, port);
-        } catch (Exception ex) {
-            // this is the best effort, if not done ignore
+            return bootstrap
+                .bootstrap()
+                .createAugmentor()
+                .createInitialRuntimeApplication();
+        } catch (BootstrapException ex) {
+            throw new RuntimeException(ex);
         }
     }
 }
