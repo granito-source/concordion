@@ -155,12 +155,16 @@ public class QuarkusTestEngine extends
 
     private synchronized void ensureRunning()
     {
-        if (runningApplication == null)
+        if (runningApplication == null) {
+            if (startupAction == null)
+                throw new IllegalStateException("no startup action");
+
             try {
                 runningApplication = runApplication(startupAction);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
+        }
     }
 
     private RunningQuarkusApplication runApplication(StartupAction action)
