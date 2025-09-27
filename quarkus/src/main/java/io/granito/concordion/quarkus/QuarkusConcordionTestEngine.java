@@ -30,17 +30,20 @@ public class QuarkusConcordionTestEngine implements TestEngine {
     }
 
     @Override
-    public TestDescriptor discover(EngineDiscoveryRequest request, UniqueId id)
+    public TestDescriptor discover(EngineDiscoveryRequest request,
+        UniqueId id)
     {
         ensureTestEngine(request);
 
-        return testEngine.discover(request, id);
+        return testEngine != null ? testEngine.discover(request, id) :
+            QuarkusTestEngine.createRoot(id);
     }
 
     @Override
     public void execute(ExecutionRequest request)
     {
-        testEngine.execute(request);
+        if (testEngine != null)
+            testEngine.execute(request);
     }
 
     protected <T> ServiceLoader<T> serviceLoaderLoad(Class<T> service,
@@ -106,10 +109,10 @@ public class QuarkusConcordionTestEngine implements TestEngine {
             QuarkusTestEngine.fixtureStream(request)
                 .findAny()
                 .map(this::bootstrap)
-                .ifPresentOrElse(action -> {
+                .ifPresent(action -> {
                     startupAction = action;
                     testEngine = reloadTestEngine();
-                }, () -> testEngine = newQuarkusTestEngine(null));
+                });
         }
     }
 

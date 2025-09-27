@@ -47,6 +47,11 @@
             <artifactId>quarkus-junit5-mockito</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-testkit</artifactId>
+            <version>1.13.4</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -57,7 +62,7 @@
                 <configuration>
                     <systemPropertyVariables>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                        <quarkus.log.cosole.enabled>false</quarkus.log.cosole.enabled>
+                        <quarkus.log.console.enabled>false</quarkus.log.console.enabled>
                     </systemPropertyVariables>
                     <argLine>-XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
                 </configuration>

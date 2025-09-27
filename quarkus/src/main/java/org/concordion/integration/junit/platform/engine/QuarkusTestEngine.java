@@ -53,6 +53,12 @@ public class QuarkusTestEngine extends
         return concat(byClass, byPackage);
     }
 
+    public static TestDescriptor createRoot(UniqueId id)
+    {
+        return new ConcordionEngineDescriptor(id,
+            "Concordion with Quarkus for JUnit Platform");
+    }
+
     private final Map<Class<?>, SpecificationDescriptor> cache =
         new HashMap<>();
 
@@ -75,10 +81,10 @@ public class QuarkusTestEngine extends
     }
 
     @Override
-    public TestDescriptor discover(EngineDiscoveryRequest request, UniqueId id)
+    public TestDescriptor discover(EngineDiscoveryRequest request,
+        UniqueId id)
     {
-        var root = new ConcordionEngineDescriptor(id,
-            "Concordion with Quarkus for JUnit Platform");
+        var root = createRoot(id);
         var locator = new ClassNameBasedSpecificationLocator();
 
         fixtureStream(request)
@@ -108,7 +114,7 @@ public class QuarkusTestEngine extends
                 appendExample(descriptor, fixture, example);
         } catch (IOException ex) {
             throw new RuntimeException(
-                "Error occurred while loading specification examples (with [" +
+                "error loading specification examples (with [" +
                     fixture.getName() + "] fixture)", ex);
         }
     }
