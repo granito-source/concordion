@@ -11,7 +11,7 @@ import java.util.Random;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import io.granito.concordion.api.QuarkusConcordionFixture;
+import io.granito.concordion.quarkus.QuarkusConcordionFixture;
 import io.quarkus.bootstrap.app.RunningQuarkusApplication;
 import io.quarkus.bootstrap.app.StartupAction;
 import org.concordion.api.SpecificationLocator;

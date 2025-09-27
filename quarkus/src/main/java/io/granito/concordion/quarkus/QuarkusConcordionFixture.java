@@ -1,4 +1,4 @@
-package io.granito.concordion.api;
+package io.granito.concordion.quarkus;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

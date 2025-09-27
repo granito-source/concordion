@@ -2,7 +2,6 @@ package io.granito.concordion.quarkus;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.granito.concordion.api.QuarkusConcordionFixture;
 import org.junit.jupiter.api.Test;
 
 public class QuarkusConcordionProviderTest {
