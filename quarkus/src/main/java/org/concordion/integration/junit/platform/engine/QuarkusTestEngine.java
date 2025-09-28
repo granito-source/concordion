@@ -39,7 +39,8 @@ public class QuarkusTestEngine extends
             .isPresent() &&
             clazz.getName().matches(ENDS_WITH_FIXTURE_OR_TEST_REGEX);
 
-    public static Stream<Class<?>> fixtureStream(EngineDiscoveryRequest request)
+    public static Stream<Class<?>> fixtureStream(
+        EngineDiscoveryRequest request)
     {
         var byClass = request.getSelectorsByType(ClassSelector.class)
             .stream()
@@ -147,13 +148,8 @@ public class QuarkusTestEngine extends
 
     private Class<?> ensureClassLoader(Class<?> clazz)
     {
-        var classLoader = getClass().getClassLoader();
-
-        if (clazz.getClassLoader() == classLoader)
-            return clazz;
-
         try {
-            return classLoader.loadClass(clazz.getName());
+            return getClass().getClassLoader().loadClass(clazz.getName());
         } catch (ClassNotFoundException ex) {
             throw new RuntimeException(ex);
         }

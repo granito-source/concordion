@@ -2,8 +2,6 @@ package io.granito.concordion.quarkus;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.concordion.internal.FixtureType;
-import org.concordion.internal.cache.RunResultsCache;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.engine.TestDescriptor;
 import org.junit.platform.engine.discovery.DiscoverySelectors;
@@ -67,42 +65,18 @@ class QuarkusConcordionTestEngineTest {
     @Test
     void runsConcordionSpecs()
     {
-        var runResultsCache = RunResultsCache.SINGLETON;
-        var demoFixtureType = new FixtureType(DemoFixture.class);
-        var partialMatchesFixtureType = new FixtureType(PartialMatchesFixture.class);
-        var spikeFixtureType = new FixtureType(SpikeFixture.class);
+        var executionResults = engine
+            .selectors(
+                DiscoverySelectors.selectClass(DemoFixture.class),
+                DiscoverySelectors.selectClass(PartialMatchesFixture.class),
+                DiscoverySelectors.selectClass(SpikeFixture.class))
+            .execute();
 
-        runResultsCache.removeAllFromCache(demoFixtureType);
-        runResultsCache.removeAllFromCache(partialMatchesFixtureType);
-        runResultsCache.removeAllFromCache(spikeFixtureType);
-
-//        ConcordionTestEngine._clearCacheForTestingOnly();
-
-        try {
-            var executionResults = engine
-                .selectors(
-                    DiscoverySelectors.selectClass(DemoFixture.class),
-                    DiscoverySelectors.selectClass(PartialMatchesFixture.class),
-                    DiscoverySelectors.selectClass(SpikeFixture.class))
-                .execute();
-
-            executionResults
-                .containerEvents()
-                .assertStatistics(stats -> stats.started(1 + 3));
-            executionResults
-                .testEvents()
-                .assertStatistics(stats -> stats.started(3).succeeded(3));
-
-//            assertThat(runResultsCache.getFromCache(demoFixtureType, null))
-//                .isNotNull();
-//            assertThat(runResultsCache.getFromCache(partialMatchesFixtureType, null))
-//                .isNotNull();
-//            assertThat(runResultsCache.getFromCache(spikeFixtureType, null))
-//                .isNotNull();
-        } finally {
-            runResultsCache.removeAllFromCache(demoFixtureType);
-            runResultsCache.removeAllFromCache(partialMatchesFixtureType);
-            runResultsCache.removeAllFromCache(spikeFixtureType);
-        }
+        executionResults
+            .containerEvents()
+            .assertStatistics(stats -> stats.started(1 + 3));
+        executionResults
+            .testEvents()
+            .assertStatistics(stats -> stats.started(3).succeeded(3));
     }
 }

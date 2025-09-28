@@ -62,7 +62,8 @@ public class QuarkusConcordionTestEngine implements TestEngine {
         var classLoader = startupAction.getClassLoader();
 
         try {
-            var engineClass = classLoader.loadClass(TestEngine.class.getName());
+            var engineClass = classLoader
+                .loadClass(TestEngine.class.getName());
 
             for (var provider: serviceLoaderLoad(engineClass, classLoader)) {
                 var engine = (TestEngine)provider;
