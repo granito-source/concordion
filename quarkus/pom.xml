@@ -10,8 +10,6 @@
     </parent>
 
     <artifactId>concordion-quarkus</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-
     <name>Concordion with Quarkus</name>
 
     <properties>
@@ -50,7 +48,7 @@
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-testkit</artifactId>
-            <version>1.13.4</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -64,7 +62,6 @@
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                         <quarkus.log.console.enabled>false</quarkus.log.console.enabled>
                     </systemPropertyVariables>
-                    <argLine>-XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
                 </configuration>
             </plugin>
         </plugins>
