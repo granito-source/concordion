@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-
 import javax.imageio.stream.MemoryCacheImageInputStream;
 
 import org.concordion.ext.ScreenshotExtension;

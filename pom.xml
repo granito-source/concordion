@@ -20,12 +20,13 @@
     </modules>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>17</maven.compiler.release>
+        <assertj.version>3.27.6</assertj.version>
         <concordion.version>4.0.1</concordion.version>
         <junit.version>5.13.4</junit.version>
         <mockito.version>5.20.0</mockito.version>
-        <assertj.version>3.27.6</assertj.version>
+        <quarkus.platform.version>3.26.4</quarkus.platform.version>
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencyManagement>
@@ -82,6 +83,11 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.14.1</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>

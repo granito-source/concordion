@@ -7,8 +7,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.inject.Stereotype;
 import org.junit.platform.commons.annotation.Testable;
 
 @Target(ElementType.TYPE)
@@ -16,7 +14,5 @@ import org.junit.platform.commons.annotation.Testable;
 @Inherited
 @Documented
 @Testable
-@Stereotype
-@Dependent
 public @interface QuarkusConcordionFixture {
 }
