@@ -17,6 +17,7 @@
     <modules>
         <module>quarkus</module>
         <module>screenshot</module>
+        <module>spring</module>
         <module>test</module>
         <module>write</module>
     </modules>
@@ -30,6 +31,7 @@
         <mockito.version>5.20.0</mockito.version>
         <quarkus.platform.version>3.26.4</quarkus.platform.version>
         <selenium.version>4.35.0</selenium.version>
+        <spring.version>6.2.11</spring.version>
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -58,6 +60,11 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>org.concordion</groupId>
+                <artifactId>concordion</artifactId>
+                <version>${concordion.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
                 <version>${javassist.version}</version>
@@ -69,7 +76,6 @@
         <dependency>
             <groupId>org.concordion</groupId>
             <artifactId>concordion</artifactId>
-            <version>${concordion.version}</version>
             <scope>provided</scope>
         </dependency>
 

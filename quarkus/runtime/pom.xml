@@ -19,7 +19,6 @@
         <dependency>
             <groupId>org.concordion</groupId>
             <artifactId>concordion</artifactId>
-            <version>${concordion.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
