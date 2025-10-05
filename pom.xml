@@ -17,14 +17,18 @@
     <modules>
         <module>quarkus</module>
         <module>screenshot</module>
+        <module>test</module>
+        <module>write</module>
     </modules>
 
     <properties>
         <assertj.version>3.27.6</assertj.version>
         <concordion.version>4.0.1</concordion.version>
+        <concordion-screenshot-extension.version>1.3.0</concordion-screenshot-extension.version>
         <junit.version>5.13.4</junit.version>
         <mockito.version>5.20.0</mockito.version>
         <quarkus.platform.version>3.26.4</quarkus.platform.version>
+        <selenium.version>4.35.0</selenium.version>
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
