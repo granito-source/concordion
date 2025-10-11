@@ -1,4 +1,4 @@
-package spec;
+package spec.quarkus;
 
 import io.granito.concordion.quarkus.QuarkusConcordionFixture;
 import org.concordion.api.ConcordionResources;

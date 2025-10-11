@@ -1,11 +1,13 @@
-package spec;
+package spec.spring;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import io.granito.concordion.quarkus.QuarkusConcordionFixture;
+import io.granito.concordion.spring.SpringConcordionFixture;
+import org.springframework.test.context.ContextConfiguration;
 
-@QuarkusConcordionFixture
+@SpringConcordionFixture
+@ContextConfiguration(classes = SpikeFixture.class)
 public class SpikeFixture {
     public String getGreetingFor(String name)
     {

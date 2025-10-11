@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.engine.TestDescriptor;
 import org.junit.platform.engine.discovery.DiscoverySelectors;
 import org.junit.platform.testkit.engine.EngineTestKit;
-import spec.DemoFixture;
-import spec.PartialMatchesFixture;
-import spec.SpikeFixture;
+import spec.spring.DemoFixture;
+import spec.spring.PartialMatchesFixture;
+import spec.spring.SpikeFixture;
 
 class SpringConcordionTestEngineTest {
     private final EngineTestKit.Builder engine = EngineTestKit
@@ -37,7 +37,7 @@ class SpringConcordionTestEngineTest {
         assertThat(descriptor.isContainer()).isTrue();
         assertThat(descriptor.getChildren())
             .extracting(TestDescriptor::getDisplayName)
-            .containsExactly("spec.Demo");
+            .containsExactly("spec.spring.Demo");
     }
 
     @Test
@@ -56,9 +56,9 @@ class SpringConcordionTestEngineTest {
         assertThat(descriptor.getChildren())
             .extracting(TestDescriptor::getDisplayName)
             .containsExactlyInAnyOrder(
-                "spec.Demo",
-                "spec.PartialMatches",
-                "spec.Spike"
+                "spec.spring.Demo",
+                "spec.spring.PartialMatches",
+                "spec.spring.Spike"
             );
     }
 

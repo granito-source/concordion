@@ -1,4 +1,4 @@
-package spec;
+package spec.quarkus;
 
 import java.util.HashSet;
 import java.util.Set;

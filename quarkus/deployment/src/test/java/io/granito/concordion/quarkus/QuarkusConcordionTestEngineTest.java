@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.engine.TestDescriptor;
 import org.junit.platform.engine.discovery.DiscoverySelectors;
 import org.junit.platform.testkit.engine.EngineTestKit;
-import spec.DemoFixture;
-import spec.PartialMatchesFixture;
-import spec.SpikeFixture;
+import spec.quarkus.DemoFixture;
+import spec.quarkus.PartialMatchesFixture;
+import spec.quarkus.SpikeFixture;
 
 class QuarkusConcordionTestEngineTest {
     private final EngineTestKit.Builder engine = EngineTestKit
@@ -37,7 +37,7 @@ class QuarkusConcordionTestEngineTest {
         assertThat(descriptor.isContainer()).isTrue();
         assertThat(descriptor.getChildren())
             .extracting(TestDescriptor::getDisplayName)
-            .containsExactly("spec.Demo");
+            .containsExactly("spec.quarkus.Demo");
     }
 
     @Test
@@ -56,9 +56,9 @@ class QuarkusConcordionTestEngineTest {
         assertThat(descriptor.getChildren())
             .extracting(TestDescriptor::getDisplayName)
             .containsExactlyInAnyOrder(
-                "spec.Demo",
-                "spec.PartialMatches",
-                "spec.Spike"
+                "spec.quarkus.Demo",
+                "spec.quarkus.PartialMatches",
+                "spec.quarkus.Spike"
             );
     }
 

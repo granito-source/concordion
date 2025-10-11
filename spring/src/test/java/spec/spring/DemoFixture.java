@@ -1,4 +1,4 @@
-package spec;
+package spec.spring;
 
 import io.granito.concordion.spring.SpringConcordionFixture;
 import org.concordion.api.ConcordionResources;
