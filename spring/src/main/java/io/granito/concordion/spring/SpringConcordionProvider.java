@@ -8,7 +8,7 @@ public class SpringConcordionProvider implements TestFrameworkProvider {
     public boolean isConcordionFixture(Class<?> clazz)
     {
         return AnnotationSupport
-            .findAnnotation(clazz, SpringConcordionFixture.class)
+            .findAnnotation(clazz, ConcordionFixture.class)
             .isPresent();
     }
 }

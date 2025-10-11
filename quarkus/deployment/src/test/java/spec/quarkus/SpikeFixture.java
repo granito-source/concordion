@@ -3,9 +3,9 @@ package spec.quarkus;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import io.granito.concordion.quarkus.QuarkusConcordionFixture;
+import io.granito.concordion.quarkus.ConcordionFixture;
 
-@QuarkusConcordionFixture
+@ConcordionFixture
 public class SpikeFixture {
     public String getGreetingFor(String name)
     {

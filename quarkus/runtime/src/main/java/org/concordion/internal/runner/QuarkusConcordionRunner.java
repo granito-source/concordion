@@ -2,7 +2,7 @@ package org.concordion.internal.runner;
 
 import io.granito.concordion.quarkus.QuarkusConcordionTestEngine;
 
-public class QuarkusRunner extends DefaultConcordionRunner {
+public class QuarkusConcordionRunner extends DefaultConcordionRunner {
     @Override
     String resolveEngineId(Class<?> fixtureClass)
     {

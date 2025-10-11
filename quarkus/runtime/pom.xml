@@ -17,9 +17,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.concordion</groupId>
-            <artifactId>concordion</artifactId>
-            <scope>compile</scope>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>concordion-engine</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>

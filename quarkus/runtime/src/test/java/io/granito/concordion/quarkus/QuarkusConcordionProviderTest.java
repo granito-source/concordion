@@ -25,7 +25,7 @@ public class QuarkusConcordionProviderTest {
     private static class PlainClass {
     }
 
-    @QuarkusConcordionFixture
+    @ConcordionFixture
     private static class AnnotatedTest {
     }
 }

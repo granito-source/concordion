@@ -5,10 +5,10 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import io.granito.concordion.spring.SpringConcordionFixture;
+import io.granito.concordion.spring.ConcordionFixture;
 import org.springframework.test.context.ContextConfiguration;
 
-@SpringConcordionFixture
+@ConcordionFixture
 @ContextConfiguration(classes = PartialMatchesFixture.class)
 public class PartialMatchesFixture {
     private final Set<String> usernamesInSystem = new HashSet<>();

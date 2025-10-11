@@ -9,7 +9,6 @@ import io.quarkus.bootstrap.app.StartupAction;
 import io.quarkus.bootstrap.model.PathsCollection;
 import io.quarkus.maven.dependency.ArtifactKey;
 import io.quarkus.test.common.PathTestHelper;
-import org.concordion.integration.junit.platform.engine.QuarkusTestEngine;
 import org.junit.platform.engine.EngineDiscoveryRequest;
 import org.junit.platform.engine.ExecutionRequest;
 import org.junit.platform.engine.TestDescriptor;

@@ -5,9 +5,9 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import io.granito.concordion.quarkus.QuarkusConcordionFixture;
+import io.granito.concordion.quarkus.ConcordionFixture;
 
-@QuarkusConcordionFixture
+@ConcordionFixture
 public class PartialMatchesFixture {
     private final Set<String> usernamesInSystem = new HashSet<>();
 

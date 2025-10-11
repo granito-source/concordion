@@ -25,7 +25,7 @@ public class SpringConcordionProviderTest {
     private static class PlainClass {
     }
 
-    @SpringConcordionFixture
+    @ConcordionFixture
     private static class AnnotatedTest {
     }
 }

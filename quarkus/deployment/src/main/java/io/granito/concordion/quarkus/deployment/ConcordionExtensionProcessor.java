@@ -1,6 +1,6 @@
 package io.granito.concordion.quarkus.deployment;
 
-import io.granito.concordion.quarkus.QuarkusConcordionFixture;
+import io.granito.concordion.quarkus.ConcordionFixture;
 import io.quarkus.arc.deployment.AutoAddScopeBuildItem;
 import io.quarkus.arc.deployment.UnremovableBeanBuildItem;
 import io.quarkus.arc.processor.BuiltinScope;
@@ -10,7 +10,7 @@ import org.jboss.jandex.DotName;
 
 public class ConcordionExtensionProcessor {
     private static final DotName FIXTURE_ANNOTATION =
-        DotName.createSimple(QuarkusConcordionFixture.class);
+        DotName.createSimple(ConcordionFixture.class);
 
     @BuildStep
     FeatureBuildItem feature()

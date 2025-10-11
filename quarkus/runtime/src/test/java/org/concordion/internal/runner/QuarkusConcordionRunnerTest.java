@@ -2,13 +2,14 @@ package org.concordion.internal.runner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.granito.concordion.quarkus.QuarkusConcordionFixture;
+import io.granito.concordion.quarkus.ConcordionFixture;
 import org.concordion.integration.junit4.ConcordionRunner;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
-class QuarkusRunnerTest {
-    private final QuarkusRunner runner = new QuarkusRunner();
+class QuarkusConcordionRunnerTest {
+    private final QuarkusConcordionRunner runner =
+        new QuarkusConcordionRunner();
 
     @Test
     void indicatesConcordionQuarkusEngineIdWhenNotAnnotatedFixture()
@@ -34,7 +35,7 @@ class QuarkusRunnerTest {
     private static class PlainFixture {
     }
 
-    @QuarkusConcordionFixture
+    @ConcordionFixture
     private static class AnnotatedFixture {
     }
 

@@ -1,19 +1,15 @@
 package org.concordion.integration.junit.platform.engine;
 
 import static java.util.stream.Stream.concat;
-import static org.junit.platform.commons.support.AnnotationSupport.findAnnotation;
 import static org.junit.platform.commons.support.ReflectionSupport.streamAllClassesInPackage;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import io.granito.concordion.spring.SpringConcordionFixture;
 import org.concordion.api.SpecificationLocator;
 import org.concordion.internal.ClassNameBasedSpecificationLocator;
-import org.concordion.internal.runner.SpringRunner;
 import org.junit.platform.engine.EngineDiscoveryRequest;
 import org.junit.platform.engine.ExecutionRequest;
 import org.junit.platform.engine.TestDescriptor;
@@ -22,15 +18,9 @@ import org.junit.platform.engine.discovery.ClassSelector;
 import org.junit.platform.engine.discovery.PackageSelector;
 import org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine;
 
-public abstract class SpringTestEngine extends
+public abstract class BaseConcordionTestEngine extends
     HierarchicalTestEngine<ConcordionEngineExecutionContext> {
-    private static final String ENDS_WITH_FIXTURE_OR_TEST_REGEX =
-        ".*(Fixture|Test)$";
-
-    private static final Predicate<Class<?>> IS_FIXTURE_CLASS = clazz ->
-        findAnnotation(clazz, SpringConcordionFixture.class)
-            .isPresent() &&
-            clazz.getName().matches(ENDS_WITH_FIXTURE_OR_TEST_REGEX);
+    private static final String FIXTURE_PATTERN = ".*(Fixture|Test)$";
 
     public static Stream<Class<?>> fixtureStream(
         EngineDiscoveryRequest request)
@@ -44,23 +34,18 @@ public abstract class SpringTestEngine extends
                 selector.getPackageName(), clazz -> true,
                 className -> true));
 
-        return concat(byClass, byPackage);
+        return concat(byClass, byPackage)
+            .filter(clazz -> clazz.getName().matches(FIXTURE_PATTERN));
     }
 
     public static TestDescriptor createRoot(UniqueId id)
     {
         return new ConcordionEngineDescriptor(id,
-            "Concordion with Quarkus for JUnit Platform");
+            "Concordion for JUnit Platform");
     }
 
     private final Map<Class<?>, SpecificationDescriptor> cache =
         new HashMap<>();
-
-    public SpringTestEngine()
-    {
-        System.setProperty("concordion.runner.concordion",
-            SpringRunner.class.getName());
-    }
 
     @Override
     public TestDescriptor discover(EngineDiscoveryRequest request,
@@ -70,7 +55,8 @@ public abstract class SpringTestEngine extends
         var locator = new ClassNameBasedSpecificationLocator();
 
         fixtureStream(request)
-            .filter(IS_FIXTURE_CLASS)
+            .map(this::adjustClass)
+            .filter(this::annotatedAsFixture)
             .forEach(fixture -> append(root, fixture, locator));
 
         return root;
@@ -83,14 +69,19 @@ public abstract class SpringTestEngine extends
         return new ConcordionEngineExecutionContext(request);
     }
 
+    protected Class<?> adjustClass(Class<?> clazz)
+    {
+        return clazz;
+    }
+
     protected void append(TestDescriptor parent, Class<?> fixture,
         SpecificationLocator locator)
     {
-        var descriptor = appendSpec(parent, fixture, locator);
+        var spec = appendSpec(parent, fixture, locator);
 
         try {
-            for (var example: descriptor.getExampleNames())
-                appendExample(descriptor, fixture, example);
+            for (var example: spec.getExampleNames())
+                spec.addChild(exampleDescriptor(spec.getUniqueId(), fixture, example));
         } catch (IOException ex) {
             throw new RuntimeException(
                 "error loading specification examples (with [" +
@@ -102,25 +93,40 @@ public abstract class SpringTestEngine extends
         TestDescriptor parent, Class<?> fixture,
         SpecificationLocator locator)
     {
-        var descriptor = cache.get(fixture);
+        var spec = cache.get(fixture);
 
-        if (descriptor == null) {
-            descriptor = new SpringSpecificationDescriptor(
-                parent.getUniqueId(), fixture, locator);
-            cache.put(fixture, descriptor);
+        if (spec == null) {
+            spec = specificationDescriptor(parent.getUniqueId(), fixture, locator);
+            cache.put(fixture, spec);
         }
 
-        parent.addChild(descriptor);
+        parent.addChild(spec);
 
-        return descriptor;
+        return spec;
     }
 
-    protected void appendExample(SpecificationDescriptor parent,
+    protected SpecificationDescriptor specificationDescriptor(
+        UniqueId parentId, Class<?> fixture, SpecificationLocator locator)
+    {
+        return new SpecificationDescriptor(parentId, fixture, locator) {
+            @Override
+            protected Object createFixtureObject()
+            {
+                return BaseConcordionTestEngine.this
+                    .createFixtureObject(getFixtureClass());
+            }
+        };
+    }
+
+    protected ExampleDescriptor exampleDescriptor(UniqueId parentId,
         Class<?> fixture, String example)
     {
-        parent.addChild(new ExampleDescriptor(
-            parent.getUniqueId()
-                .append(ExampleDescriptor.SEGMENT_TYPE, example),
-            fixture, example));
+        var id = parentId.append(ExampleDescriptor.SEGMENT_TYPE, example);
+
+        return new ExampleDescriptor(id, fixture, example);
     }
+
+    protected abstract boolean annotatedAsFixture(Class<?> clazz);
+
+    protected abstract Object createFixtureObject(Class<?> clazz);
 }

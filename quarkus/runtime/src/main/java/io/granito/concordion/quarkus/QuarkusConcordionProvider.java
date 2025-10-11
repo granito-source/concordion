@@ -8,7 +8,7 @@ public class QuarkusConcordionProvider implements TestFrameworkProvider {
     public boolean isConcordionFixture(Class<?> clazz)
     {
         return AnnotationSupport
-            .findAnnotation(clazz, QuarkusConcordionFixture.class)
+            .findAnnotation(clazz, ConcordionFixture.class)
             .isPresent();
     }
 }

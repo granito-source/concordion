@@ -20,7 +20,7 @@ class SpringConcordionTestEngineTest {
         var descriptor = engine.discover().getEngineDescriptor();
 
         assertThat(descriptor.getDisplayName())
-            .isEqualTo("Concordion with Quarkus for JUnit Platform");
+            .isEqualTo("Concordion for JUnit Platform");
     }
 
     @Test

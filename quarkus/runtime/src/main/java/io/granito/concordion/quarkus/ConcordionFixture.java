@@ -14,5 +14,5 @@ import org.junit.platform.commons.annotation.Testable;
 @Inherited
 @Documented
 @Testable
-public @interface QuarkusConcordionFixture {
+public @interface ConcordionFixture {
 }

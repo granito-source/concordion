@@ -15,6 +15,7 @@
     </description>
 
     <modules>
+        <module>engine</module>
         <module>quarkus</module>
         <module>screenshot</module>
         <module>spring</module>

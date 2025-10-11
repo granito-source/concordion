@@ -3,10 +3,10 @@ package spec.spring;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import io.granito.concordion.spring.SpringConcordionFixture;
+import io.granito.concordion.spring.ConcordionFixture;
 import org.springframework.test.context.ContextConfiguration;
 
-@SpringConcordionFixture
+@ConcordionFixture
 @ContextConfiguration(classes = SpikeFixture.class)
 public class SpikeFixture {
     public String getGreetingFor(String name)

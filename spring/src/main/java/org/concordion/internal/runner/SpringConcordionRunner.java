@@ -2,7 +2,7 @@ package org.concordion.internal.runner;
 
 import io.granito.concordion.spring.SpringConcordionTestEngine;
 
-public class SpringRunner extends DefaultConcordionRunner {
+public class SpringConcordionRunner extends DefaultConcordionRunner {
     @Override
     String resolveEngineId(Class<?> fixtureClass)
     {
