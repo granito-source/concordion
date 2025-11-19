@@ -47,7 +47,7 @@
     <scm>
         <connection>scm:git:git://github.com/granito-source/concordion.git</connection>
         <developerConnection>scm:git:ssh://github.com:granito-source/concordion.git</developerConnection>
-        <url>http://github.com/granito-source/concordion</url>
+        <url>https://github.com/granito-source/concordion</url>
         <tag>main</tag>
     </scm>
 
@@ -144,22 +144,14 @@
     </dependencies>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.14.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.5.4</version>
-                    <configuration>
-                        <argLine>-XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 </project>
