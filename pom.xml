@@ -159,12 +159,7 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <detectOfflineLinks>true</detectOfflineLinks>
-<!--                    <doclint>all,-missing</doclint>-->
-<!--                    <links>-->
-<!--                        <link>https://docs.junit.org/${junit.version}/api</link>-->
-<!--                        <link>https://concordion.github.io/concordion/latest/javadoc</link>-->
-<!--                        <link>https://docs.spring.io/spring-framework/docs/${spring.version}/javadoc-api</link>-->
-<!--                    </links>-->
+                    <doclint>all,-missing</doclint>
                 </configuration>
             </plugin>
         </plugins>
