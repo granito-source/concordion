@@ -24,16 +24,26 @@ import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import org.jboss.jandex.DotName;
 
+/**
+ * An extension processor for Concordion integration with Quarkus.
+ */
 public class ConcordionExtensionProcessor {
     private static final DotName FIXTURE_ANNOTATION =
         DotName.createSimple(ConcordionFixture.class);
 
+    /**
+     * Registers the Concordion extension feature.
+     */
     @BuildStep
     FeatureBuildItem feature()
     {
         return new FeatureBuildItem("concordion-extension");
     }
 
+    /**
+     * Automatically adds the Dependent scope to beans annotated with
+     * {@link ConcordionFixture @ConcordionFixture}.
+     */
     @BuildStep
     AutoAddScopeBuildItem autoAddScope()
     {
@@ -43,6 +53,11 @@ public class ConcordionExtensionProcessor {
             .build();
     }
 
+    /**
+     * Marks beans annotated with
+     * {@link ConcordionFixture @ConcordionFixture} as unremovable to
+     * prevent them from being removed during build-time optimizations.
+     */
     @BuildStep
     UnremovableBeanBuildItem unremovableBean()
     {

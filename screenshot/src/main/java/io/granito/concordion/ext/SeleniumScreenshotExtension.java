@@ -31,20 +31,42 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
+/**
+ * A Concordion extension that captures screenshots using Selenium
+ * {@link WebDriver} as PNG images.
+ */
 public class SeleniumScreenshotExtension extends ScreenshotExtension
     implements ScreenshotTaker {
     private WebDriver webDriver;
 
+    /**
+     * Creates a new {@link SeleniumScreenshotExtension}.
+     */
     public SeleniumScreenshotExtension()
     {
         setScreenshotTaker(this);
     }
 
+    /**
+     * Sets the {@link WebDriver} instance to use for taking screenshots.
+     *
+     * @param webDriver the {@code WebDriver} instance
+     */
     public void setWebDriver(WebDriver webDriver)
     {
         this.webDriver = webDriver;
     }
 
+    /**
+     * Takes a screenshot using the configured {@link WebDriver} and
+     * writes it to the provided output stream.
+     *
+     * @param outputStream the {@code OutputStream} for the screenshot
+     * @return the dimensions of the captured screenshot
+     * @throws IOException when an I/O error occurs
+     * @throws ScreenshotUnavailableException when the {@code WebDriver}
+     * is not configured or does not support taking screenshots
+     */
     @Override
     public Dimension writeScreenshotTo(OutputStream outputStream)
         throws IOException
@@ -66,6 +88,12 @@ public class SeleniumScreenshotExtension extends ScreenshotExtension
         }
     }
 
+    /**
+     * Returns the file extension for the screenshots taken by this
+     * extension.
+     *
+     * @return always {@code "png"} in this implementation
+     */
     @Override
     public String getFileExtension()
     {

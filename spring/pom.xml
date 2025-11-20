@@ -12,7 +12,7 @@
     <artifactId>concordion-spring</artifactId>
     <name>Concordion with Spring</name>
     <description>
-        JUnit test engine for running Concordion specifications with
+        A JUnit test engine for running Concordion specifications with
         Spring Testing support.
     </description>
 

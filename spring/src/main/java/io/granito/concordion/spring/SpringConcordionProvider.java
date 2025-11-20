@@ -19,7 +19,19 @@ package io.granito.concordion.spring;
 import org.concordion.integration.TestFrameworkProvider;
 import org.junit.platform.commons.support.AnnotationSupport;
 
+/**
+ * An implementation of {@link TestFrameworkProvider} with Spring
+ * dependency injection. It recognizes Concordion fixtures by
+ * the presence of {@link ConcordionFixture} annotation.
+ */
 public class SpringConcordionProvider implements TestFrameworkProvider {
+    /**
+     * Check if the class is an instance of Concordion fixture with
+     * Spring dependency injection.
+     *
+     * @param clazz the class to check
+     * @return {@code true} if Concordion fixture, {@code false} otherwise
+     */
     @Override
     public boolean isConcordionFixture(Class<?> clazz)
     {

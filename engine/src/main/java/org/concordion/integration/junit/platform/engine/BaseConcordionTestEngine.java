@@ -34,10 +34,22 @@ import org.junit.platform.engine.discovery.ClassSelector;
 import org.junit.platform.engine.discovery.PackageSelector;
 import org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine;
 
+/**
+ * A common foundation for Concordion test engines. The implementation
+ * must define how to determine if a class is a Concordion fixture and
+ * how to create a fixture object from such class.
+ */
 public abstract class BaseConcordionTestEngine extends
     HierarchicalTestEngine<ConcordionEngineExecutionContext> {
     private static final String FIXTURE_PATTERN = ".*(Fixture|Test)$";
 
+    /**
+     * Return a stream of fixture candidates classes from an
+     * engine discovery request based on their simple names only.
+     *
+     * @param request the discovery request
+     * @return a stream of fixture candidate classes
+     */
     public static Stream<Class<?>> fixtureStream(
         EngineDiscoveryRequest request)
     {
@@ -54,6 +66,13 @@ public abstract class BaseConcordionTestEngine extends
             .filter(clazz -> clazz.getName().matches(FIXTURE_PATTERN));
     }
 
+    /**
+     * Create a root test descriptor for the provided uniqueID.
+     *
+     * @param id the unique ID
+     * @return a new test descriptor, an instance of
+     * {@link ConcordionEngineDescriptor}
+     */
     public static TestDescriptor createRoot(UniqueId id)
     {
         return new ConcordionEngineDescriptor(id,
@@ -63,6 +82,19 @@ public abstract class BaseConcordionTestEngine extends
     private final Map<Class<?>, SpecificationDescriptor> cache =
         new HashMap<>();
 
+    /**
+     * Discover tests according to the supplied
+     * {@linkplain EngineDiscoveryRequest discovery request}.
+     * This implementation supports
+     * {@linkplain ClassSelector class selectors} and
+     * {@linkplain PackageSelector package selectors}.
+     *
+     * @param request the discovery request
+     * @param id the unique ID to be used for this test engine's
+     * {@code TestDescriptor}
+     * @return the root {@code TestDescriptor} of this engine, an
+     * instance of {@link ConcordionEngineDescriptor}
+     */
     @Override
     public TestDescriptor discover(EngineDiscoveryRequest request,
         UniqueId id)
@@ -78,6 +110,14 @@ public abstract class BaseConcordionTestEngine extends
         return root;
     }
 
+    /**
+     * Create the initial execution context for executing the supplied
+     * {@linkplain ExecutionRequest request}.
+     *
+     * @param request the request about to be executed
+     * @return the initial context that will be passed to nodes in
+     * the hierarchy
+     */
     @Override
     protected ConcordionEngineExecutionContext createExecutionContext(
         ExecutionRequest request)
@@ -85,11 +125,30 @@ public abstract class BaseConcordionTestEngine extends
         return new ConcordionEngineExecutionContext(request);
     }
 
+    /**
+     * Potentially adjust the class of the fixture, for example,
+     * it can use a different class loader if needed. The default
+     * implementation does nothing to the class. Override to change
+     * this behavior.
+     *
+     * @param clazz the fixture class
+     * @return the adjusted class
+     */
     protected Class<?> adjustClass(Class<?> clazz)
     {
         return clazz;
     }
 
+    /**
+     * Append the
+     * {@linkplain SpecificationDescriptor specification descriptor} with
+     * all contained {@linkplain ExampleDescriptor example descriptors}
+     * to the parent {@linkplain TestDescriptor test descriptor}.
+     *
+     * @param parent the parent test descriptor
+     * @param fixture the fixture class
+     * @param locator the specification locator
+     */
     protected void append(TestDescriptor parent, Class<?> fixture,
         SpecificationLocator locator)
     {
@@ -97,7 +156,8 @@ public abstract class BaseConcordionTestEngine extends
 
         try {
             for (var example: spec.getExampleNames())
-                spec.addChild(exampleDescriptor(spec.getUniqueId(), fixture, example));
+                spec.addChild(exampleDescriptor(spec.getUniqueId(),
+                    fixture, example));
         } catch (IOException ex) {
             throw new RuntimeException(
                 "error loading specification examples (with [" +
@@ -105,6 +165,17 @@ public abstract class BaseConcordionTestEngine extends
         }
     }
 
+    /**
+     * Append a {@linkplain SpecificationDescriptor specification descriptor}
+     * to the parent {@linkplain TestDescriptor test descriptor}.
+     * The implementation first tries to locate the specification
+     * description in the cache, and if not found, creates a new one.
+     *
+     * @param parent the parent test descriptor
+     * @param fixture the fixture class
+     * @param locator the locator of the specification
+     * @return the appended specification descriptor
+     */
     protected synchronized SpecificationDescriptor appendSpec(
         TestDescriptor parent, Class<?> fixture,
         SpecificationLocator locator)
@@ -112,7 +183,8 @@ public abstract class BaseConcordionTestEngine extends
         var spec = cache.get(fixture);
 
         if (spec == null) {
-            spec = specificationDescriptor(parent.getUniqueId(), fixture, locator);
+            spec = specificationDescriptor(parent.getUniqueId(), fixture,
+                locator);
             cache.put(fixture, spec);
         }
 
@@ -121,6 +193,15 @@ public abstract class BaseConcordionTestEngine extends
         return spec;
     }
 
+    /**
+     * Create a new
+     * {@linkplain SpecificationDescriptor specification descriptor}.
+     *
+     * @param parentId the parent ID
+     * @param fixture the fixture class
+     * @param locator the locator of the specification
+     * @return a new specification descriptor
+     */
     protected SpecificationDescriptor specificationDescriptor(
         UniqueId parentId, Class<?> fixture, SpecificationLocator locator)
     {
@@ -134,6 +215,14 @@ public abstract class BaseConcordionTestEngine extends
         };
     }
 
+    /**
+     * Create a new {@linkplain ExampleDescriptor example descriptor}.
+     *
+     * @param parentId the parent ID
+     * @param fixture the fixture class
+     * @param example the name of the example
+     * @return a new example descriptor
+     */
     protected ExampleDescriptor exampleDescriptor(UniqueId parentId,
         Class<?> fixture, String example)
     {
@@ -142,7 +231,20 @@ public abstract class BaseConcordionTestEngine extends
         return new ExampleDescriptor(id, fixture, example);
     }
 
+    /**
+     * Check if the class is annotated as a Concordion fixture.
+     *
+     * @param clazz the class to check
+     * @return {@code true} when the given class is a Concordion fixture,
+     * {@code false} otherwise
+     */
     protected abstract boolean annotatedAsFixture(Class<?> clazz);
 
+    /**
+     * Create a fixture object instance given the required fixture class.
+     *
+     * @param clazz the class of the fixture
+     * @return a fixture instance
+     */
     protected abstract Object createFixtureObject(Class<?> clazz);
 }

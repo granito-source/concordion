@@ -12,7 +12,7 @@
     <artifactId>concordion-quarkus</artifactId>
     <name>Quarkus Extension for Concordion</name>
     <description>
-        A runtime module for the Quarkus extension for Concordion.
+        The runtime module for Quarkus extension for Concordion.
     </description>
 
     <dependencies>

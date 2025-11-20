@@ -31,19 +31,41 @@ import org.junit.platform.engine.TestDescriptor;
 import org.junit.platform.engine.TestEngine;
 import org.junit.platform.engine.UniqueId;
 
+/**
+ * An implementation of {@link TestEngine} that supports running
+ * Concordion specifications with Quarkus dependency injection. This
+ * implementation is a proxy that delegates to the actual test engine
+ * loaded in the Quarkus application class loader.
+ */
 public class QuarkusConcordionTestEngine implements TestEngine {
+    /** The test engine's ID */
     public static final String ENGINE_ID = "concordion-quarkus";
 
     private static StartupAction startupAction;
 
     private static TestEngine testEngine;
 
+    /**
+     * Return the ID of this test engine.
+     *
+     * @return the test engine ID, see {@link #ENGINE_ID}
+     */
     @Override
     public String getId()
     {
         return ENGINE_ID;
     }
 
+    /**
+     * Discover tests based on the given discovery request. When running
+     * outside of Quarkus, a minimal root test descriptor is returned.
+     * When running under Quarkus, the actual test engine is loaded and
+     * used to perform test discovery.
+     *
+     * @param request the engine discovery request
+     * @param id the unique ID for the root test descriptor
+     * @return the root test descriptor
+     */
     @Override
     public TestDescriptor discover(EngineDiscoveryRequest request,
         UniqueId id)
@@ -54,6 +76,12 @@ public class QuarkusConcordionTestEngine implements TestEngine {
             QuarkusTestEngine.createRoot(id);
     }
 
+    /**
+     * Execute tests based on the given execution request. If the
+     * actual test engine is not available, no tests are executed.
+     *
+     * @param request the execution request
+     */
     @Override
     public void execute(ExecutionRequest request)
     {
@@ -61,12 +89,29 @@ public class QuarkusConcordionTestEngine implements TestEngine {
             testEngine.execute(request);
     }
 
+    /**
+     * Load service providers using the given class loader. This method
+     * can be overridden to facilitate unit testing.
+     *
+     * @param <T> the service type
+     * @param service the service class
+     * @param classLoader the class loader
+     * @return the service loader
+     */
     protected <T> ServiceLoader<T> serviceLoaderLoad(Class<T> service,
         ClassLoader classLoader)
     {
         return ServiceLoader.load(service, classLoader);
     }
 
+    /**
+     * Create a new instance of {@link QuarkusTestEngine} using the
+     * given startup action. This method can be overridden to
+     * facilitate unit testing.
+     *
+     * @param startupAction the Quarkus startup action
+     * @return a new instance of {@code QuarkusTestEngine}
+     */
     protected TestEngine newQuarkusTestEngine(StartupAction startupAction)
     {
         return new QuarkusTestEngine(startupAction);

@@ -23,20 +23,46 @@ import org.concordion.internal.runner.SpringConcordionRunner;
 import org.junit.platform.commons.support.ReflectionSupport;
 import org.springframework.test.context.TestContextManager;
 
+/**
+ * An implementation of
+ * {@link org.junit.platform.engine.TestEngine TestEngine}
+ * that supports running Concordion specifications with Spring
+ * dependency injection.
+ */
 public class SpringConcordionTestEngine extends BaseConcordionTestEngine {
+    /** The test engine's ID */
     public static final String ENGINE_ID = "concordion-spring";
+
+    /**
+     * Creates a new instance of {@link SpringConcordionTestEngine}.
+     * Also, it configures the Concordion to use
+     * {@link SpringConcordionRunner} by default.
+     */
     public SpringConcordionTestEngine()
     {
         System.setProperty("concordion.runner.concordion",
             SpringConcordionRunner.class.getName());
     }
 
+    /**
+     * Return the ID of this test engine.
+     *
+     * @return the test engine ID, see {@link #ENGINE_ID}
+     */
     @Override
     public String getId()
     {
         return ENGINE_ID;
     }
 
+    /**
+     * Checks if the given class is annotated as a Concordion fixture
+     * with Spring integration.
+     *
+     * @param clazz the class to check
+     * @return {@code true} if annotated as a Concordion fixture,
+     * {@code false} otherwise
+     */
     @Override
     protected boolean annotatedAsFixture(Class<?> clazz)
     {
@@ -44,6 +70,13 @@ public class SpringConcordionTestEngine extends BaseConcordionTestEngine {
             .isPresent();
     }
 
+    /**
+     * Creates a fixture object and injects Spring dependencies into it
+     * using {@link TestContextManager}.
+     *
+     * @param clazz the fixture class
+     * @return the created fixture object
+     */
     @Override
     protected Object createFixtureObject(Class<?> clazz)
     {

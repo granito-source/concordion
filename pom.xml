@@ -39,8 +39,9 @@
     <url>https://github.com/granito-source/concordion</url>
     <licenses>
         <license>
-            <name>Apache License Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
         </license>
     </licenses>
 
@@ -51,12 +52,15 @@
         <tag>main</tag>
     </scm>
 
+    <organization>
+        <name>Granito</name>
+        <url>https://github.com/granito-source</url>
+    </organization>
+
     <developers>
         <developer>
             <name>Alexei Yashkov</name>
             <email>alexei.yashkov@granito.io</email>
-            <organization>Granito</organization>
-            <organizationUrl>https://github.com/granito-source</organizationUrl>
         </developer>
     </developers>
 
@@ -148,6 +152,19 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>-XX:+EnableDynamicAgentLoading -Xshare:off</argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <detectOfflineLinks>true</detectOfflineLinks>
+<!--                    <doclint>all,-missing</doclint>-->
+<!--                    <links>-->
+<!--                        <link>https://docs.junit.org/${junit.version}/api</link>-->
+<!--                        <link>https://concordion.github.io/concordion/latest/javadoc</link>-->
+<!--                        <link>https://docs.spring.io/spring-framework/docs/${spring.version}/javadoc-api</link>-->
+<!--                    </links>-->
                 </configuration>
             </plugin>
         </plugins>

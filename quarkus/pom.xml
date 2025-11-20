@@ -13,7 +13,8 @@
     <packaging>pom</packaging>
     <name>Quarkus Extension for Concordion: Parent</name>
     <description>
-        A parent POM for the Quarkus extension for Concordion modules.
+        A JUnit test engine for running Concordion specifications with
+        Quarkus testing support.
     </description>
 
     <modules>

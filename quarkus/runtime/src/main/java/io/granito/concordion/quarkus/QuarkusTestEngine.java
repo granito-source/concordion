@@ -29,6 +29,14 @@ import org.concordion.integration.junit.platform.engine.BaseConcordionTestEngine
 import org.concordion.internal.runner.QuarkusConcordionRunner;
 import org.junit.platform.engine.TestDescriptor;
 
+/**
+ * An implementation of
+ * {@link org.junit.platform.engine.TestEngine TestEngine}
+ * that supports running Concordion specifications with Quarkus
+ * dependency injection. This engine is not intended to be used
+ * directly, but rather from a proxy {@link QuarkusConcordionTestEngine}
+ * instance.
+ */
 public class QuarkusTestEngine extends BaseConcordionTestEngine {
     private static final int MIN_PORT = 49152;
 
@@ -38,6 +46,11 @@ public class QuarkusTestEngine extends BaseConcordionTestEngine {
 
     private RunningQuarkusApplication runningApplication;
 
+    /**
+     * Creates a new instance of {@link QuarkusTestEngine}.
+     *
+     * @param startupAction the action to start the Quarkus application
+     */
     public QuarkusTestEngine(StartupAction startupAction)
     {
         this.startupAction = startupAction;
@@ -45,6 +58,12 @@ public class QuarkusTestEngine extends BaseConcordionTestEngine {
             QuarkusConcordionRunner.class.getName());
     }
 
+    /**
+     * Prevents the use of this engine directly.
+     *
+     * @return never
+     * @throws UnsupportedOperationException always
+     */
     @Override
     public String getId()
     {
@@ -52,6 +71,13 @@ public class QuarkusTestEngine extends BaseConcordionTestEngine {
             "this engine cannot be used directly");
     }
 
+    /**
+     * Adjusts the given class to be loaded in the Quarkus application
+     * class loader.
+     *
+     * @param clazz the class to adjust
+     * @return the adjusted class
+     */
     @Override
     protected Class<?> adjustClass(Class<?> clazz)
     {
@@ -62,6 +88,14 @@ public class QuarkusTestEngine extends BaseConcordionTestEngine {
         }
     }
 
+    /**
+     * Appends a test descriptor for the given fixture class after
+     * ensuring that the Quarkus application is running.
+     *
+     * @param parent the parent test descriptor
+     * @param fixture the fixture class
+     * @param locator the specification locator
+     */
     @Override
     protected void append(TestDescriptor parent, Class<?> fixture,
         SpecificationLocator locator)
@@ -70,12 +104,26 @@ public class QuarkusTestEngine extends BaseConcordionTestEngine {
         super.append(parent, fixture, locator);
     }
 
+    /**
+     * Checks if the given class is annotated as a Concordion fixture
+     * with Quarkus integration.
+     *
+     * @param clazz the class to check
+     * @return {@code true} if annotated as a Concordion fixture,
+     * {@code false} otherwise
+     */
     @Override
     protected boolean annotatedAsFixture(Class<?> clazz)
     {
         return findAnnotation(clazz, ConcordionFixture.class).isPresent();
     }
 
+    /**
+     * Creates a fixture object using Quarkus dependency injection.
+     *
+     * @param clazz the fixture class
+     * @return the created fixture object
+     */
     @Override
     protected Object createFixtureObject(Class<?> clazz)
     {

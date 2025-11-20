@@ -36,6 +36,10 @@ import org.concordion.api.extension.ConcordionExtension;
 import org.concordion.api.listener.ConcordionBuildEvent;
 import org.concordion.api.listener.ConcordionBuildListener;
 
+/**
+ * A Concordion extension that writes the result of an expression
+ * evaluation to a file and links the file to the specification.
+ */
 public class WriteExtension extends AbstractCommand
     implements ConcordionExtension, ConcordionBuildListener {
     private static final String NAMESPACE = "urn:concordion-extensions:2010";
@@ -46,6 +50,11 @@ public class WriteExtension extends AbstractCommand
 
     private Target target;
 
+    /**
+     * Registers the extension to the {@link ConcordionExtender}.
+     *
+     * @param extender the Concordion extender for the registration
+     */
     @Override
     public void addTo(ConcordionExtender extender)
     {
@@ -53,12 +62,27 @@ public class WriteExtension extends AbstractCommand
         extender.withCommand(NAMESPACE, COMMAND, this);
     }
 
+    /**
+     * Captures the Concordion target from the {@link ConcordionBuildEvent}.
+     *
+     * @param event the Concordion build event
+     */
     @Override
     public void concordionBuilt(ConcordionBuildEvent event)
     {
         target = event.getTarget();
     }
 
+    /**
+     * Executes the {@code write} command that writes the evaluated
+     * expression to a file and links the file as {@code href} attribute
+     * of the element (normally {@code <a>}).
+     *
+     * @param call the command call
+     * @param evaluator the evaluator for expression evaluation
+     * @param recorder the result recorder
+     * @param fixture the fixture
+     */
     @Override
     public void execute(CommandCall call, Evaluator evaluator,
         ResultRecorder recorder, Fixture fixture)

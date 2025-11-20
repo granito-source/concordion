@@ -12,7 +12,7 @@
     <artifactId>concordion-quarkus-deployment</artifactId>
     <name>Quarkus Extension for Concordion: Deployment</name>
     <description>
-        A deployment time module for the Quarkus extension for Concordion.
+        The deployment time module for Quarkus extension for Concordion.
     </description>
 
     <dependencies>

@@ -25,6 +25,10 @@ import java.lang.annotation.Target;
 
 import org.junit.platform.commons.annotation.Testable;
 
+/**
+ * An annotation to mark Concordion fixture classes that use Spring
+ * dependency injection.
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

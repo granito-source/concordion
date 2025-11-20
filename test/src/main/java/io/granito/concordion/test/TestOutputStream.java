@@ -21,6 +21,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * A test double implementation for {@link OutputStream} that captures
+ * written data in memory and allows simulating write and close
+ * exceptions.
+ */
 public class TestOutputStream extends OutputStream {
     private final ByteArrayOutputStream content = new ByteArrayOutputStream();
 
@@ -30,11 +35,23 @@ public class TestOutputStream extends OutputStream {
 
     private boolean closed = false;
 
+    /**
+     * Sets an exception to be thrown on the next write operation.
+     *
+     * @param exception the exception to throw
+     */
     public void setWriteException(IOException exception)
     {
         writeException = exception;
     }
 
+    /**
+     * Captures the provided {@code byte} in this output stream.
+     *
+     * @param b the {@code byte} to write
+     * @throws IOException when a write exception is set using
+     * {@link #setWriteException(IOException)}
+     */
     @Override
     public void write(int b) throws IOException
     {
@@ -42,6 +59,15 @@ public class TestOutputStream extends OutputStream {
         content.write(b);
     }
 
+    /**
+     * Captures the provided byte array in this output stream.
+     *
+     * @param buf the data to write
+     * @param off the start offset in the data
+     * @param len the number of bytes to write
+     * @throws IOException when a write exception is set using
+     * {@link #setWriteException(IOException)}
+     */
     @Override
     public void write(byte[] buf, int off, int len) throws IOException
     {
@@ -49,16 +75,33 @@ public class TestOutputStream extends OutputStream {
         content.write(buf, off, len);
     }
 
+    /**
+     * Sets an exception to be thrown on the next close operation.
+     *
+     * @param exception the exception to throw
+     */
     public void setCloseException(IOException exception)
     {
         closeException = exception;
     }
 
+    /**
+     * Indicates whether this output stream has been closed.
+     *
+     * @return {@code true} if this output stream is closed,
+     * {@code false} otherwise
+     */
     public boolean isClosed()
     {
         return closed;
     }
 
+    /**
+     * Closes this output stream.
+     *
+     * @throws IOException when a close exception is set using
+     * {@link #setCloseException(IOException)}
+     */
     @Override
     public void close() throws IOException
     {
@@ -67,11 +110,22 @@ public class TestOutputStream extends OutputStream {
         this.closed = true;
     }
 
+    /**
+     * Returns the content captured in this output stream as a byte array.
+     *
+     * @return the content as a byte array
+     */
     public byte[] toByteArray()
     {
         return content.toByteArray();
     }
 
+    /**
+     * Returns the content captured in this output stream as a string
+     * using UTF-8 encoding.
+     *
+     * @return the content as a string
+     */
     @Override
     public String toString()
     {
