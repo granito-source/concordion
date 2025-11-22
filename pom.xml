@@ -27,7 +27,7 @@
 
     <groupId>io.granito.concordion</groupId>
     <artifactId>concordion-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>pom</packaging>
 
     <name>Concordion Extensions</name>
@@ -48,7 +48,7 @@
         <connection>scm:git:git://github.com/granito-source/concordion.git</connection>
         <developerConnection>scm:git:ssh://github.com:granito-source/concordion.git</developerConnection>
         <url>https://github.com/granito-source/concordion</url>
-        <tag>release/1.0</tag>
+        <tag>v1.0.0</tag>
     </scm>
 
     <organization>
