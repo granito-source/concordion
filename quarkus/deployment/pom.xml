@@ -36,8 +36,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-  <scm>
-    <tag>release/1.0</tag>
-  </scm>
 </project>
