@@ -15,7 +15,10 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    child.project.url.inherit.append.path="false">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -44,7 +47,9 @@
         </license>
     </licenses>
 
-    <scm>
+    <scm child.scm.url.inherit.append.path="false"
+        child.scm.connection.inherit.append.path="false"
+        child.scm.developerConnection.inherit.append.path="false">
         <connection>scm:git:https://github.com/granito-source/concordion.git</connection>
         <developerConnection>scm:git:ssh://github.com:granito-source/concordion.git</developerConnection>
         <url>https://github.com/granito-source/concordion</url>
