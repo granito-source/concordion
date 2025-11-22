@@ -45,7 +45,7 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git://github.com/granito-source/concordion.git</connection>
+        <connection>scm:git:https://github.com/granito-source/concordion.git</connection>
         <developerConnection>scm:git:ssh://github.com:granito-source/concordion.git</developerConnection>
         <url>https://github.com/granito-source/concordion</url>
         <tag>release/1</tag>
