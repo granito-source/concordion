@@ -15,10 +15,7 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-    child.project.url.inherit.append.path="false">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" child.project.url.inherit.append.path="false">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -30,7 +27,7 @@
 
     <groupId>io.granito.concordion</groupId>
     <artifactId>concordion-parent</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>pom</packaging>
 
     <name>Concordion Extensions</name>
@@ -47,13 +44,11 @@
         </license>
     </licenses>
 
-    <scm child.scm.url.inherit.append.path="false"
-        child.scm.connection.inherit.append.path="false"
-        child.scm.developerConnection.inherit.append.path="false">
+    <scm child.scm.url.inherit.append.path="false" child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false">
         <connection>scm:git:https://github.com/granito-source/concordion.git</connection>
         <developerConnection>scm:git:ssh://github.com:granito-source/concordion.git</developerConnection>
         <url>https://github.com/granito-source/concordion</url>
-        <tag>release/1.0</tag>
+        <tag>v1.0.1</tag>
     </scm>
 
     <organization>
