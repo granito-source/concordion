@@ -38,6 +38,6 @@
     </dependencies>
 
   <scm>
-    <tag>release/1</tag>
+    <tag>release/1.0</tag>
   </scm>
 </project>
