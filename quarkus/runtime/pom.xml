@@ -21,7 +21,7 @@
     <parent>
         <artifactId>concordion-quarkus-parent</artifactId>
         <groupId>io.granito.concordion</groupId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.2</version>
     </parent>
 
     <artifactId>concordion-quarkus</artifactId>
